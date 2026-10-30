@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Knowledge base{% endblock %}
+{% block content %}
+<section id="knowledge">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.knowledge_eyebrow">Reference</div>
+      <h2 data-i18n="page.knowledge_heading">Farming knowledge base</h2>
+      <p>General agronomy reference content and real government scheme links — no fabricated video
+        links (see the "About" section below for why).</p>
+    </div>
+    <div class="kb-tabs">
+      <button class="kb-tab active" data-kb="articles" type="button">Articles</button>
+      <button class="kb-tab" data-kb="best_practices" type="button">Best Practices</button>
+      <button class="kb-tab" data-kb="organic_farming" type="button">Organic Farming</button>
+      <button class="kb-tab" data-kb="pest_management" type="button">Pest Management</button>
+      <button class="kb-tab" data-kb="government_schemes" type="button">Govt Schemes</button>
+    </div>
+    <div id="kb-content"></div>
+
+    <div class="card" id="eligibility-checker" style="display:none; max-width:520px; margin-top:24px;">
+      <h3 style="font-size:1rem;">Eligibility checker</h3>
+      <p class="hint">Indicative only — a few broad, stable factors, not a legal determination.</p>
+      <label class="symptom-check"><input type="checkbox" id="elig-owns-land"> I own or lease cultivable land</label>
+      <label class="symptom-check"><input type="checkbox" id="elig-notified-crop"> I grow a crop notified for insurance in my district</label>
+      <label class="symptom-check"><input type="checkbox" id="elig-tax-payer"> I pay income tax</label>
+      <label class="symptom-check"><input type="checkbox" id="elig-govt-employee"> I am a government employee/pensioner</label>
+      <button class="btn btn-ghost btn-small" id="eligibility-btn" type="button" style="margin-top:10px;">Check eligibility</button>
+      <div id="eligibility-results" style="margin-top:14px;"></div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initKnowledgePage(); });
+</script>
+{% endblock %}

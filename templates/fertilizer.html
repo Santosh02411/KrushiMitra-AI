@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Fertilizer plan{% endblock %}
+{% block content %}
+<section id="fertilizer">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.fertilizer_eyebrow">Step 4</div>
+      <h2 data-i18n="page.fertilizer_heading">Fertilizer recommendation</h2>
+      <p>Pick a crop and your area, and get a standard fertilizer plan — which fertilizer, how
+        much, roughly what it costs, and when to apply it. Based on published package-of-practices
+        N-P-K doses, not a guess.</p>
+    </div>
+
+    <div class="card" style="max-width:520px;">
+      <div class="field-row">
+        <div class="field"><label for="fert-crop">Crop</label>
+          <select id="fert-crop">
+            <option value="rice">Rice</option><option value="wheat">Wheat</option>
+            <option value="maize">Maize</option><option value="cotton">Cotton</option>
+            <option value="chickpea">Chickpea (Gram)</option><option value="lentil">Lentil (Masoor)</option>
+            <option value="pigeonpeas">Pigeon peas (Arhar/Tur)</option><option value="mungbean">Mung bean (Moong)</option>
+            <option value="blackgram">Black gram (Urad)</option><option value="jute">Jute</option>
+            <option value="banana">Banana</option><option value="watermelon">Watermelon</option>
+            <option value="muskmelon">Muskmelon</option><option value="groundnut">Groundnut</option>
+            <option value="soybean">Soybean</option><option value="sunflower">Sunflower</option>
+            <option value="mustard">Mustard (Rapeseed)</option><option value="sugarcane">Sugarcane</option>
+            <option value="onion">Onion</option><option value="potato">Potato</option>
+            <option value="sesame">Sesame</option><option value="bajra">Bajra (Pearl millet)</option>
+            <option value="jowar">Jowar (Sorghum)</option><option value="ragi">Ragi (Finger millet)</option>
+            <option value="barley">Barley</option><option value="castor">Castor seed</option>
+            <option value="turmeric">Turmeric</option><option value="ginger">Ginger</option>
+            <option value="garlic">Garlic</option><option value="chilli">Chilli</option>
+            <option value="sweet potato">Sweet potato</option><option value="tobacco">Tobacco</option>
+            <option value="coriander">Coriander</option><option value="safflower">Safflower</option>
+            <option value="linseed">Linseed</option><option value="niger">Niger seed</option>
+            <option value="guar">Guar seed</option><option value="cowpea">Cowpea (Lobia)</option>
+            <option value="horsegram">Horse gram</option><option value="khesari">Khesari</option>
+            <option value="sunnhemp">Sunn hemp</option><option value="mesta">Mesta</option>
+            <option value="small millets">Small millets</option><option value="tapioca">Tapioca</option>
+          </select>
+        </div>
+        <div class="field"><label for="fert-area">Area (acres)</label><input type="number" id="fert-area" value="1" step="0.1" min="0.1"></div>
+      </div>
+      <button class="btn btn-primary" id="fertilizer-btn" type="button">Get fertilizer plan</button>
+      <div class="loading-note" id="fertilizer-loading">Building plan…</div>
+      <div class="error-note" id="fertilizer-error"></div>
+    </div>
+
+    <div id="fertilizer-results" style="display:none; margin-top:26px; max-width:600px;">
+      <div id="fert-plan-list"></div>
+      <div class="fert-total"><span>Total approx. cost</span><span id="fert-total-cost"></span></div>
+      <p class="hint" id="fert-reference-note" style="margin-top:10px;"></p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initFertilizerPage(); });
+</script>
+{% endblock %}

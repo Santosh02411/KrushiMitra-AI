@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Data sources{% endblock %}
+{% block content %}
+<section id="about">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.about_eyebrow">Honesty about data</div>
+      <h2 data-i18n="page.about_heading">What's real, and what's a labeled fallback</h2>
+      <p>Every module is tagged with where its numbers actually come from — nothing here pretends
+        to be live when it isn't.</p>
+    </div>
+    <div class="about-grid">
+      <div class="card">
+        <h3><span class="status-dot real"></span>Crop model — real</h3>
+        <p class="desc" style="min-height:0;">Trained on a published 2,200-sample dataset. Accuracy
+          is measured on a held-out test split, shown live in the panel above.</p>
+      </div>
+      <div class="card">
+        <h3><span class="status-dot real"></span>Weather & location — real</h3>
+        <p class="desc" style="min-height:0;">Live weather from Open-Meteo, and location from your
+          device's GPS via the browser — not IP-based guessing.</p>
+      </div>
+      <div class="card">
+        <h3><span class="status-dot partial"></span>Market prices — real, limited coverage</h3>
+        <p class="desc" style="min-height:0;">A regression model trained on real government mandi
+          data currently covers <b>potato, tomato and wheat</b>. Other crops show an explicit
+          "not covered" message rather than an invented number. Add a data.gov.in key for live
+          prices on more crops.</p>
+      </div>
+      <div class="card">
+        <h3><span class="status-dot real"></span>Fertilizer & calendar — real reference data</h3>
+        <p class="desc" style="min-height:0;">Published package-of-practices N-P-K doses and
+          crop-duration figures — transparent lookups and arithmetic, not ML.</p>
+      </div>
+      <div class="card">
+        <h3><span class="status-dot partial"></span>Disease check — reference, not image AI</h3>
+        <p class="desc" style="min-height:0;">Symptom-matching against known diseases, not photo
+          analysis. I looked for a real bundleable image model and found one, but its only dependency
+          path (fastai 1.x) doesn't install on modern Python — so it's not shipped rather than
+          shipped broken.</p>
+      </div>
+      <div class="card">
+        <h3><span class="status-dot real"></span>Dashboard, map, knowledge base — real, with limits</h3>
+        <p class="desc" style="min-height:0;">Dashboard charts are your own logged data — nothing
+          synthetic. The map uses free Leaflet/OpenStreetMap (no key) and shows real markets, but
+          skips "nearby weather stations" since that data doesn't exist for a model-based forecast
+          service. The knowledge base has no video links, since I can't verify a URL is real or
+          current without a search tool in this build.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initAboutPage(); });
+</script>
+{% endblock %}

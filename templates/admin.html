@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+<section id="admin">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.admin_eyebrow">Admin only</div>
+      <h2 data-i18n="page.admin_heading">Admin panel</h2>
+      <p>Real queries against the app's own database — no synthetic stats.</p>
+    </div>
+
+    <div class="dash-summary-row" id="admin-stats-row"></div>
+
+    <div class="kb-tabs">
+      <button class="kb-tab active" data-admin="farmers" type="button">Farmers</button>
+      <button class="kb-tab" data-admin="crops" type="button">Crops</button>
+      <button class="kb-tab" data-admin="weather" type="button">Weather</button>
+      <button class="kb-tab" data-admin="market" type="button">Market Prices</button>
+      <button class="kb-tab" data-admin="news" type="button">News</button>
+      <button class="kb-tab" data-admin="disease" type="button">Disease DB</button>
+    </div>
+
+    <div id="admin-panel-content"></div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initAdminPage(); });
+</script>
+{% endblock %}

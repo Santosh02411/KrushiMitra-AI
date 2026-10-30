@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% set active = 'decision' %}
+{% block title %}AI Farm Decision Engine{% endblock %}
+{% block content %}
+<header class="planner-head">
+  <div class="container">
+    <div class="eyebrow on-dark">✨ AI Farm Decision Engine</div>
+    <h1>Your personalised farming plan</h1>
+    <p>Combines crop suitability, soil health, live weather, yield, market prices, fertilizer, irrigation and costs.
+      Every figure is labelled <b>measured · live · model · reference · observed</b> — predictions are never presented as facts, and nothing is guaranteed.</p>
+  </div>
+</header>
+
+<div class="container planner-wrap">
+  <div class="planner-grid">
+
+    <form class="card planner-form" id="dm-form" autocomplete="off">
+      <h3>Quick start</h3>
+      <div class="preset-row">
+        <button type="button" class="preset" data-preset="chickpea">🌱 Chickpea · Madhya Pradesh</button>
+        <button type="button" class="preset" data-preset="maize">🌽 Maize · Karnataka</button>
+        <button type="button" class="preset" data-preset="rice">🌾 Rice · West Bengal</button>
+      </div>
+      <p class="hint" style="margin:4px 0 0">Presets fill sample inputs (not real farm data) so you can see a full plan instantly. Edit anything.</p>
+
+      <h3>Your farm</h3>
+      <div class="field"><label for="dm-location">Location (for live weather)</label>
+        <div class="location-row"><input type="text" id="dm-location" placeholder="e.g. Belagavi, Karnataka"><button type="button" class="btn btn-ghost btn-small" id="dm-gps">📍 GPS</button></div>
+        <div class="location-status" id="dm-gps-status"></div></div>
+      <div class="field-row">
+        <div class="field"><label for="dm-state">State</label><select id="dm-state"><option value="">Select state</option></select></div>
+        <div class="field"><label for="dm-area">Area (acres)</label><input type="number" id="dm-area" min="0.1" step="0.1" placeholder="e.g. 2.5"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="dm-season">Season</label><select id="dm-season"><option value="">Auto (from today's date)</option></select></div>
+        <div class="field"><label for="dm-sowing">Sowing date</label><input type="date" id="dm-sowing"></div>
+      </div>
+      <div class="field"><label for="dm-soiltype">Soil type (optional)</label><select id="dm-soiltype"><option value="">Select soil type</option></select></div>
+
+      <h3>Soil test (kg/ha)</h3>
+      <div class="field-row">
+        <div class="field"><label for="dm-n">Nitrogen (N)</label><input type="number" id="dm-n" min="0" step="any"></div>
+        <div class="field"><label for="dm-p">Phosphorus (P)</label><input type="number" id="dm-p" min="0" step="any"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="dm-k">Potassium (K)</label><input type="number" id="dm-k" min="0" step="any"></div>
+        <div class="field"><label for="dm-ph">Soil pH</label><input type="number" id="dm-ph" min="3" max="10" step="0.1"></div>
+      </div>
+      <div class="field"><label for="dm-oc">Organic carbon % (optional)</label><input type="number" id="dm-oc" min="0" max="10" step="0.01"></div>
+      <p class="hint">No soil test? Leave these blank — the engine falls back to what's widely grown in your state and says so.</p>
+
+      <h3>Crop</h3>
+      <div class="field"><label for="dm-crop">Plan for a specific crop (optional)</label><select id="dm-crop"><option value="">Let the engine choose</option></select></div>
+
+      <details class="opt-block"><summary>Climate overrides (optional)</summary>
+        <div class="field-row" style="margin-top:10px">
+          <div class="field"><label for="dm-temp">Temperature °C</label><input type="number" id="dm-temp" step="0.1"></div>
+          <div class="field"><label for="dm-hum">Humidity %</label><input type="number" id="dm-hum" min="0" max="100"></div>
+        </div>
+        <div class="field"><label for="dm-rain">Avg monthly rainfall (mm)</label><input type="number" id="dm-rain" min="0">
+          <div class="hint">Blank = real observed rainfall for your location over the last 90 days.</div></div>
+      </details>
+
+      <details class="opt-block"><summary>Your costs, price &amp; yield (optional)</summary>
+        <p class="hint" style="margin-top:10px">KrushiMitra never guesses these. Enter what you know (₹ for your whole area).</p>
+        <div class="field-row">
+          <div class="field"><label for="dm-c-seeds">Seeds ₹</label><input type="number" id="dm-c-seeds" min="0"></div>
+          <div class="field"><label for="dm-c-labour">Labour ₹</label><input type="number" id="dm-c-labour" min="0"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="dm-c-pest">Pesticides ₹</label><input type="number" id="dm-c-pest" min="0"></div>
+          <div class="field"><label for="dm-c-water">Irrigation ₹</label><input type="number" id="dm-c-water" min="0"></div>
+        </div>
+        <div class="field"><label for="dm-c-other">Other ₹</label><input type="number" id="dm-c-other" min="0"></div>
+        <div class="field-row">
+          <div class="field"><label for="dm-price">Expected price ₹/quintal</label><input type="number" id="dm-price" min="1"></div>
+          <div class="field"><label for="dm-yield">Expected yield t/acre</label><input type="number" id="dm-yield" min="0" step="0.01"></div>
+        </div>
+      </details>
+
+      <button class="btn btn-primary btn-lg" type="submit" id="dm-submit" style="width:100%;justify-content:center;margin-top:16px">✨ Generate my farm plan</button>
+      <div class="error-note" id="dm-error"></div>
+    </form>
+
+    <div id="dm-output">
+      <div class="card plan-empty">
+        <div class="big">🌱</div>
+        <h3>Ready when you are</h3>
+        <p>Fill in your farm details (or tap a quick-start preset) and generate a plan. It takes a few seconds because it fetches live weather and runs the models.</p>
+        <div class="prov-legend" style="justify-content:center;margin-top:14px">
+          <span class="prov prov-measured">measured</span><span class="prov prov-live">live</span><span class="prov prov-model">model</span>
+          <span class="prov prov-reference">reference</span><span class="prov prov-observed">observed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/decision.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded', () => { initCommon(); initDecisionPage(); });</script>
+{% endblock %}

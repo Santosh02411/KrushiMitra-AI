@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set active = 'assistant' %}
+{% block title %}AI Assistant{% endblock %}
+{% block content %}
+<header class="planner-head">
+  <div class="container">
+    <div class="eyebrow on-dark">🧠 RAG Agricultural Assistant</div>
+    <h1>Ask anything about your farm</h1>
+    <p>Answers are retrieved from a knowledge base — built-in agronomy references plus any PDF or text documents you upload — and cite their sources.
+      If the knowledge base doesn't cover your question, the assistant says so instead of guessing.</p>
+  </div>
+</header>
+
+<div class="container planner-wrap">
+  <div class="assistant-grid">
+    <div class="chat-shell">
+      <div class="chat-top">
+        <div><b>KrushiMitra Assistant</b> <span class="hint" id="as-mode">checking knowledge base…</span></div>
+        <button class="btn btn-ghost btn-small" type="button" id="as-reset">New chat</button>
+      </div>
+      <div class="chat-scroll" id="as-scroll">
+        <div class="msg bot">Namaste! 🌾 I can answer questions about crops, soil, fertilizers, irrigation, diseases, pests and government schemes using the knowledge base on the right. Try one of the questions below, or ask your own — follow-up questions work too.</div>
+      </div>
+      <div class="suggest-row" id="as-suggest">
+        <button class="preset" type="button">Which fertilizer schedule suits rice?</button>
+        <button class="preset" type="button">What diseases affect cotton and how are they managed?</button>
+        <button class="preset" type="button">How often should maize be irrigated?</button>
+        <button class="preset" type="button">Which government schemes offer crop insurance?</button>
+      </div>
+      <form class="chat-form" id="as-form" autocomplete="off">
+        <input type="text" id="as-input" maxlength="1200" placeholder="Ask a farming question…" aria-label="Your question">
+        <button class="btn btn-primary" type="submit" id="as-send">Send</button>
+      </form>
+    </div>
+
+    <aside>
+      <div class="card docs-panel">
+        <h3 style="font-size:1rem;margin-bottom:4px">📚 Knowledge base</h3>
+        <p class="hint" id="as-stats" style="margin-top:0">Loading…</p>
+        <div class="dropzone" id="as-drop">⬆ Drop a <b>PDF, TXT or MD</b> file here, or click to choose<br><small>Text-based PDFs up to 12 MB. Your uploads are private to you{% if user and user.role == 'admin' %} (tick “share” to publish to all farmers){% endif %}.</small>
+          <input type="file" id="as-file" accept=".pdf,.txt,.md" hidden></div>
+        {% if user and user.role == 'admin' %}<label class="hint" style="display:block;margin-top:6px"><input type="checkbox" id="as-shared"> Share with all farmers</label>{% endif %}
+        <div class="location-status" id="as-upload-status"></div>
+        <div id="as-docs" style="margin-top:10px"></div>
+      </div>
+      <div class="notice info" style="margin-top:14px"><b>How it works</b><br>Your question is turned into a search query → the most relevant passages are retrieved (semantic embeddings + keyword match) → Gemini writes an answer using <i>only</i> those passages and cites them as [1], [2]…</div>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/assistant.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded', () => { initCommon(); initAssistantPage(); });</script>
+{% endblock %}

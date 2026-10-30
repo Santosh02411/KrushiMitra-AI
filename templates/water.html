@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Irrigation{% endblock %}
+{% block content %}
+<section id="water" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.water_eyebrow">Step 2</div>
+      <h2 data-i18n="page.water_heading">Irrigation schedule</h2>
+      <p>A rule-based 7-day irrigation plan built from a real weather forecast for your location —
+        a transparent water-balance calculation, not a black box.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="card">
+        <div class="field-row">
+          <div class="field">
+            <label for="water-crop">Crop</label>
+            <select id="water-crop">
+              <option value="rice">Rice</option><option value="wheat">Wheat</option>
+              <option value="maize">Maize</option><option value="cotton">Cotton</option>
+              <option value="banana">Banana</option><option value="mango">Mango</option>
+              <option value="coffee">Coffee</option><option value="grapes">Grapes</option>
+              <option value="watermelon">Watermelon</option><option value="muskmelon">Muskmelon</option>
+              <option value="other">Other (general schedule)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="water-soil">Soil type</label>
+            <select id="water-soil">
+              <option value="loamy">Loamy</option><option value="clay">Clay</option>
+              <option value="sandy">Sandy</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="water-location">Location</label>
+          <div class="location-row">
+            <input type="text" id="water-location" placeholder="uses your profile location if set" value="">
+            <button class="btn btn-ghost btn-small" id="water-detect-btn" type="button">Use my GPS</button>
+          </div>
+          <div class="location-status" id="water-location-status"></div>
+        </div>
+        <button class="btn btn-primary" id="water-btn" type="button">Build irrigation schedule</button>
+        <div class="loading-note" id="water-loading">Fetching forecast and building schedule…</div>
+        <div class="error-note" id="water-error"></div>
+      </div>
+
+      <div class="card" id="water-summary-card" style="display:none;">
+        <h3 style="font-size:1.05rem;" id="water-crop-title"></h3>
+        <p class="hint" id="water-meta"></p>
+        <ul class="tips-list" id="water-tips"></ul>
+      </div>
+    </div>
+
+    <div id="water-results" style="display:none;">
+      <div class="irrigation-headline" id="irrigation-headline"></div>
+      <table class="schedule-table">
+        <thead>
+          <tr><th>Day</th><th>Date</th><th>Irrigation</th><th>Amount (mm)</th><th>Why</th></tr>
+        </thead>
+        <tbody id="schedule-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initWaterPage(); });
+</script>
+{% endblock %}

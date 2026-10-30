@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% set active = 'dashboard' %}
+{% block title %}Farm command center{% endblock %}
+{% block content %}
+<header class="cc-head">
+  <div class="container">
+    <div>
+      <div class="eyebrow on-dark">📈 Farm command center</div>
+      <h1 id="cc-title">Welcome{% if user %}, {{ user.name }}{% endif %}</h1>
+      <p id="cc-sub">Everything on this page comes from your own records and live weather.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-demo" href="{{ url_for('decision_page') }}">✨ AI Farm Planner</a>
+      <a class="btn btn-ghost-dark" href="{{ url_for('assistant_page') }}">🧠 Ask the assistant</a>
+    </div>
+  </div>
+</header>
+
+<div class="container cc-wrap">
+  <div class="kpis" id="cc-kpis"><div class="kpi"><div class="l">Loading…</div></div></div>
+
+  <div class="cc-grid">
+    <div class="w w-4 engine-cta">
+      <h3>✨ AI Farm Decision Engine</h3>
+      <p>Get the best crop, fertilizer, irrigation and a 7-day plan for your farm from soil, weather and market data.</p>
+      <a class="btn btn-demo" href="{{ url_for('decision_page') }}">Build a plan →</a>
+      <div id="cc-plan-card" style="margin-top:14px;font-size:.84rem"></div>
+    </div>
+    <div class="w w-8"><h3>🌾 Current crops <a href="{{ url_for('calendar_page') }}">Crop calendar →</a></h3><div id="cc-crops"></div></div>
+
+    <div class="w w-4"><h3>🧪 Soil health <a href="{{ url_for('soil_page') }}">Check soil →</a></h3><div id="cc-soil"></div></div>
+    <div class="w w-4"><h3>⛅ Weather <span class="prov prov-live">live</span></h3><div id="cc-weather"></div></div>
+    <div class="w w-4"><h3>💧 Irrigation reminder <a href="{{ url_for('water_page') }}">Schedule →</a></h3><div id="cc-irrigation"></div></div>
+
+    <div class="w w-6"><h3>🗓 Upcoming farming activities</h3><div id="cc-activities"></div></div>
+    <div class="w w-6"><h3>🚜 Fertilizer schedule</h3><div id="cc-fert"></div></div>
+
+    <div class="w w-4"><h3>💰 Market price <a href="{{ url_for('market_page') }}">Markets →</a></h3><div id="cc-market"></div></div>
+    <div class="w w-4"><h3>📊 Yield predictions <a href="{{ url_for('yield_page') }}">Predict →</a></h3><div id="cc-yield"></div></div>
+    <div class="w w-4"><h3>🧾 Income &amp; expenses <a href="{{ url_for('records_page') }}">Records →</a></h3><div id="cc-fin-summary"></div></div>
+
+    <div class="w w-6 cc-charts"><h3>Income vs. expenses by month</h3><canvas id="cc-chart-monthly"></canvas><div id="cc-chart-monthly-empty"></div></div>
+    <div class="w w-6 cc-charts"><h3>Where the money goes</h3><canvas id="cc-chart-cats"></canvas><div id="cc-chart-cats-empty"></div></div>
+
+    <div class="w w-7"><h3>➕ Quick add a record</h3>
+      <div class="quick-add">
+        <div class="field"><label for="qa-type">Type</label><select id="qa-type"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+        <div class="field" id="qa-cat-wrap"><label for="qa-cat">Category</label><select id="qa-cat"><option>seeds</option><option>fertilizer</option><option>labour</option><option>water</option><option>pesticides</option><option>other</option></select></div>
+        <div class="field"><label for="qa-amount">Amount ₹</label><input type="number" id="qa-amount" min="0" placeholder="0"></div>
+        <div class="field"><label for="qa-crop">Crop</label><input type="text" id="qa-crop" maxlength="40" placeholder="optional"></div>
+        <div class="field"><label for="qa-note">Note</label><input type="text" id="qa-note" maxlength="100" placeholder="optional"></div>
+        <button class="btn btn-primary btn-small" id="qa-add" type="button">Add</button>
+      </div>
+      <div class="error-note" id="qa-error"></div>
+    </div>
+    <div class="w w-5 feed"><h3>🕒 Recent farm activity</h3><div id="cc-recent"></div></div>
+  </div>
+</div>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/command_center.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded', () => { initCommon(); initCommandCenter(); });</script>
+{% endblock %}

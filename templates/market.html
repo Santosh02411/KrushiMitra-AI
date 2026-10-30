@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Market price{% endblock %}
+{% block content %}
+<section id="market" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.market_eyebrow">Step 3</div>
+      <h2 data-i18n="page.market_heading">Market price</h2>
+      <p>Real per-market prices from government mandi records, an ML price prediction, and the
+        nearest real markets to your location. <b>Potato, tomato and wheat</b> use a trained ML
+        model (real held-out R²=0.40, shown honestly since it's modest) — <b>onion, gram, cucumber,
+        brinjal, cluster beans, bottle gourd, amaranthus, carrot, snake gourd and lemon</b> show a
+        real observed median/range from live Agmarknet records instead (too few records yet to
+        train a model on). All of this works offline, no key needed. With a free
+        <code>MARKET_API_KEY</code> from data.gov.in, any other crop can be checked live — pick
+        "Other" below to type one in.</p>
+    </div>
+
+    <div class="card" style="max-width:520px;">
+      <div class="location-row">
+        <select id="market-crop">
+          <option value="wheat">Wheat</option><option value="potato">Potato</option>
+          <option value="tomato">Tomato</option>
+          <option value="onion">Onion</option><option value="gram">Gram</option>
+          <option value="cucumber">Cucumber</option><option value="brinjal">Brinjal</option>
+          <option value="cluster beans">Cluster beans</option><option value="bottle gourd">Bottle gourd</option>
+          <option value="amaranthus">Amaranthus</option><option value="carrot">Carrot</option>
+          <option value="snake gourd">Snake gourd</option><option value="lemon">Lemon</option>
+          <option value="other">Other (live API only)</option>
+        </select>
+        <input type="text" id="market-crop-other" placeholder="e.g. rice, sugarcane" style="display:none;">
+        <select id="market-state" style="max-width:180px;"><option value="">Any state</option></select>
+        <button class="btn btn-primary btn-small" id="market-search-btn" type="button">Check prices</button>
+      </div>
+      <div class="loading-note" id="market-loading">Looking up real market records…</div>
+      <div class="error-note" id="market-error"></div>
+    </div>
+
+    <div id="market-results" style="display:none; margin-top:28px;">
+      <h3 style="font-size:1.1rem;">Price prediction (ML)</h3>
+      <div class="card" id="market-prediction-card" style="max-width:520px;"></div>
+
+      <h3 style="font-size:1.1rem; margin-top:26px;">Current mandi prices (real records)</h3>
+      <table class="mandi-table" id="mandi-table"><tbody></tbody></table>
+
+      <h3 style="font-size:1.1rem; margin-top:26px;">Nearest real markets to you</h3>
+      <p class="hint" id="nearby-hint">Use your GPS location above to see distances.</p>
+      <table class="mandi-table" id="nearby-table"><tbody></tbody></table>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initMarketPage(); });
+</script>
+{% endblock %}

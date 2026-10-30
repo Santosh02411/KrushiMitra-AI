@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Profit estimation{% endblock %}
+{% block content %}
+<section id="profit" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.profit_eyebrow">Standalone tool</div>
+      <h2 data-i18n="page.profit_heading">Profit estimation</h2>
+      <p>Enter your expenses and area/crop — income is computed from real yield × real price where
+        both are available, or your own entered price otherwise. Net profit = income − expenses.</p>
+    </div>
+
+    <div class="card" style="max-width:640px;">
+      <div class="field-row">
+        <div class="field"><label for="profit-crop">Crop</label>
+          <select id="profit-crop">
+            <option value="rice">Rice</option><option value="maize">Maize</option>
+            <option value="chickpea">Chickpea (Gram)</option><option value="pigeonpeas">Pigeon peas (Arhar/Tur)</option>
+            <option value="mothbeans">Moth beans</option><option value="mungbean">Mung bean (Moong)</option>
+            <option value="blackgram">Black gram (Urad)</option><option value="lentil">Lentil (Masoor)</option>
+            <option value="banana">Banana</option><option value="cotton">Cotton</option>
+            <option value="jute">Jute</option><option value="arecanut">Arecanut</option>
+            <option value="bajra">Bajra (Pearl millet)</option><option value="barley">Barley</option>
+            <option value="black pepper">Black pepper</option><option value="cardamom">Cardamom</option>
+            <option value="cashewnut">Cashewnut</option><option value="castor">Castor seed</option>
+            <option value="coriander">Coriander</option><option value="cowpea">Cowpea (Lobia)</option>
+            <option value="chilli">Chilli (dry)</option><option value="garlic">Garlic</option>
+            <option value="ginger">Ginger</option><option value="groundnut">Groundnut</option>
+            <option value="guar">Guar seed</option><option value="horsegram">Horse gram</option>
+            <option value="jowar">Jowar (Sorghum)</option><option value="khesari">Khesari</option>
+            <option value="linseed">Linseed</option><option value="mesta">Mesta</option>
+            <option value="niger">Niger seed</option><option value="onion">Onion</option>
+            <option value="potato">Potato</option><option value="ragi">Ragi (Finger millet)</option>
+            <option value="mustard">Mustard (Rapeseed)</option><option value="safflower">Safflower</option>
+            <option value="sunnhemp">Sunn hemp</option><option value="sesame">Sesame</option>
+            <option value="small millets">Small millets</option><option value="soybean">Soybean</option>
+            <option value="sugarcane">Sugarcane</option><option value="sunflower">Sunflower</option>
+            <option value="sweet potato">Sweet potato</option><option value="tapioca">Tapioca</option>
+            <option value="tobacco">Tobacco</option><option value="turmeric">Turmeric</option>
+            <option value="wheat">Wheat (price only)</option>
+            <option value="tomato">Tomato (price only)</option>
+            <option value="gram">Gram (price only)</option><option value="cucumber">Cucumber (price only)</option>
+            <option value="brinjal">Brinjal (price only)</option><option value="cluster beans">Cluster beans (price only)</option>
+            <option value="bottle gourd">Bottle gourd (price only)</option><option value="amaranthus">Amaranthus (price only)</option>
+            <option value="carrot">Carrot (price only)</option><option value="snake gourd">Snake gourd (price only)</option>
+            <option value="lemon">Lemon (price only)</option>
+          </select>
+        </div>
+        <div class="field"><label for="profit-area">Area (acres)</label><input type="number" id="profit-area" value="2" step="0.1"></div>
+      </div>
+      <div class="field"><label for="profit-manual-price">Expected price (₹/quintal) — used if there's no real ML price for this crop</label>
+        <input type="number" id="profit-manual-price" placeholder="e.g. 2200"></div>
+      <p class="hint">"Price only" crops have real market data but no yield model match yet — enter your
+        own expected yield/area context, or use the expected price field with your own yield estimate.</p>
+
+      <div class="divider-label">Expenses (₹)</div>
+      <div class="expense-row">
+        <div class="field"><label for="exp-seeds">Seeds</label><input type="number" id="exp-seeds" value="0"></div>
+        <div class="field"><label for="exp-fertilizer">Fertilizer</label><input type="number" id="exp-fertilizer" value="0"></div>
+        <div class="field"><label for="exp-labour">Labour</label><input type="number" id="exp-labour" value="0"></div>
+        <div class="field"><label for="exp-water">Water</label><input type="number" id="exp-water" value="0"></div>
+        <div class="field"><label for="exp-pesticides">Pesticides</label><input type="number" id="exp-pesticides" value="0"></div>
+      </div>
+      <button class="btn btn-primary" id="profit-btn" type="button">Estimate profit</button>
+      <div class="loading-note" id="profit-loading">Calculating…</div>
+      <div class="error-note" id="profit-error"></div>
+    </div>
+
+    <div id="profit-results" style="display:none; max-width:640px;"></div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initProfitPage(); });
+</script>
+{% endblock %}

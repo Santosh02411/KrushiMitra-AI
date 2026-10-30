@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Crop calendar{% endblock %}
+{% block content %}
+<section id="calendar">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.calendar_eyebrow">Step 6</div>
+      <h2 data-i18n="page.calendar_heading">Crop calendar</h2>
+      <p>Pick a crop and your sowing date to get sowing, fertilizer, irrigation, and expected
+        harvest dates — computed from published crop-duration and growth-stage references.</p>
+    </div>
+
+    <div class="card" style="max-width:520px;">
+      <div class="field-row">
+        <div class="field"><label for="cal-crop">Crop</label>
+          <select id="cal-crop">
+            <optgroup label="Annual (full calendar)">
+              <option value="rice">Rice</option><option value="wheat">Wheat</option>
+              <option value="maize">Maize</option><option value="cotton">Cotton</option>
+              <option value="chickpea">Chickpea</option><option value="lentil">Lentil</option>
+              <option value="pigeonpeas">Pigeon peas</option><option value="mothbeans">Moth beans</option>
+              <option value="mungbean">Mung bean</option><option value="blackgram">Black gram</option>
+              <option value="jute">Jute</option><option value="watermelon">Watermelon</option>
+              <option value="muskmelon">Muskmelon</option>
+            </optgroup>
+            <optgroup label="Perennial (seasonal care notes)">
+              <option value="banana">Banana</option><option value="mango">Mango</option>
+              <option value="grapes">Grapes</option><option value="apple">Apple</option>
+              <option value="orange">Orange</option><option value="papaya">Papaya</option>
+              <option value="coconut">Coconut</option><option value="coffee">Coffee</option>
+              <option value="pomegranate">Pomegranate</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="field"><label for="cal-sowing-date">Sowing date</label><input type="date" id="cal-sowing-date"></div>
+      </div>
+      <button class="btn btn-primary" id="calendar-btn" type="button">Build calendar</button>
+      <div class="loading-note" id="calendar-loading">Building calendar…</div>
+      <div class="error-note" id="calendar-error"></div>
+    </div>
+
+    <div id="calendar-results" style="display:none; margin-top:26px; max-width:600px;">
+      <p class="hint" id="calendar-summary"></p>
+      <ul class="calendar-list" id="calendar-list"></ul>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initCalendarPage(); });
+</script>
+{% endblock %}

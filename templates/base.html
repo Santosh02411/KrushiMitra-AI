@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KrushiMitra AI — {% block title %}Smart farming decisions{% endblock %}</title>
+<meta name="description" content="KrushiMitra AI turns soil, weather, market and yield data into a personalised farm plan.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2316A34A'/%3E%3Cpath d='M18 46c0-16 10-26 28-28 0 18-8 28-24 28M18 46c6-10 12-16 20-20' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<script>
+  // Set the theme before first paint (from a previous visit) so there's
+  // no flash of the wrong theme while style.css loads.
+  (function () {
+    var t = localStorage.getItem('krushi-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="stylesheet" href="{{ asset_url('css/style.css') }}">
+<link rel="stylesheet" href="{{ asset_url('css/krushimitra.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+{% if is_demo %}
+<div class="demo-banner" role="status">
+  <span><b>Demo mode</b> — you're exploring with a temporary guest account. Money entries and the maize crop plan are labelled sample data; this account is deleted automatically.</span>
+  <a href="{{ url_for('login_page') }}#register" class="demo-banner-cta">Create a free account</a>
+</div>
+{% endif %}
+
+<nav class="nav">
+  <div class="container">
+    <a href="{{ url_for('root') }}" class="logo"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14 0 9-4 14-12 14"/><path d="M5 19c3-5 6-8 10-10"/></svg></span> KrushiMitra <span class="logo-ai">AI</span></a>
+
+    {% if session.get('user_id') %}
+    <div class="nav-center">
+      <div class="nav-links-primary">
+        <a href="{{ url_for('decision_page') }}" class="nav-hero {{ 'active' if active=='decision' }}" data-i18n="nav.decision">✨ AI Farm Planner</a>
+        <a href="{{ url_for('dashboard_page') }}" class="{{ 'active' if active=='dashboard' }}" data-i18n="nav.dashboard">Dashboard</a>
+        <a href="{{ url_for('assistant_page') }}" class="{{ 'active' if active=='assistant' }}" data-i18n="nav.assistant">AI Assistant</a>
+        <a href="{{ url_for('recommend_page') }}" class="{{ 'active' if active=='recommend' }}" data-i18n="nav.recommend">Crop advisor</a>
+        <a href="{{ url_for('soil_page') }}" class="{{ 'active' if active=='soil' }}" data-i18n="nav.soil">Soil</a>
+        <a href="{{ url_for('market_page') }}" class="{{ 'active' if active=='market' }}" data-i18n="nav.market">Market</a>
+        <a href="{{ url_for('fertilizer_page') }}" class="{{ 'active' if active=='fertilizer' }}" data-i18n="nav.fertilizer">Fertilizer</a>
+        <a href="{{ url_for('yield_page') }}" class="{{ 'active' if active=='yield' }}" data-i18n="nav.yield">Yield</a>
+        <a href="{{ url_for('calendar_page') }}" class="{{ 'active' if active=='calendar' }}" data-i18n="nav.calendar">Calendar</a>
+      </div>
+
+      <div class="nav-more-wrap">
+        <button class="nav-more-btn" id="nav-more-btn" type="button"><span data-i18n="nav.more">☰ More</span></button>
+        <div class="nav-more-panel" id="nav-more-panel">
+          <a href="{{ url_for('profit_page') }}" class="{{ 'active' if active=='profit' }}" data-i18n="nav.profit">Profit</a>
+          <a href="{{ url_for('disease_page') }}" class="{{ 'active' if active=='disease' }}" data-i18n="nav.disease">Disease</a>
+          <a href="{{ url_for('water_page') }}" class="{{ 'active' if active=='water' }}" data-i18n="nav.water">Irrigation</a>
+          <a href="{{ url_for('records_page') }}" class="{{ 'active' if active=='records' }}" data-i18n="nav.records">Records</a>
+          <a href="{{ url_for('analytics_page') }}" class="{{ 'active' if active=='analytics' }}" data-i18n="nav.analytics">Analytics</a>
+          <a href="{{ url_for('map_page') }}" class="{{ 'active' if active=='map' }}" data-i18n="nav.map">Map</a>
+          <a href="{{ url_for('knowledge_page') }}" class="{{ 'active' if active=='knowledge' }}" data-i18n="nav.knowledge">Learn</a>
+          {% if user and user.role == 'admin' %}<a href="{{ url_for('admin_page') }}" class="{{ 'active' if active=='admin' }}" data-i18n="nav.admin">Admin</a>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="nav-right">
+      <select id="lang-switcher" class="lang-switcher" title="Language / भाषा"></select>
+      <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" title="Toggle dark/light theme">🌙</button>
+      {% if session.get('user_id') and user %}
+      <div class="notif-wrap" id="notif-wrap" style="display:none;">
+        <button class="nav-notif-btn" id="nav-notif-btn" type="button">
+          <span class="bell">🔔</span><span class="count" id="nav-notif-badge"></span>
+        </button>
+        <div class="notif-panel" id="notif-panel">
+          <div class="notif-panel-header" data-i18n="notif.panel_title">Alerts</div>
+          <div id="notif-panel-list"><p class="notif-empty" data-i18n="common.loading">Loading…</p></div>
+        </div>
+      </div>
+      <div class="avatar-wrap">
+        <button class="avatar-btn" id="avatar-btn" type="button">{{ user.name[0]|upper }}</button>
+        <div class="avatar-panel" id="avatar-panel">
+          <div class="avatar-panel-header">
+            <div class="name">{{ user.name }}</div>
+            <div class="email">{{ user.email }}</div>
+            <span class="role-badge">{{ user.role }}{% if user.location %} · {{ user.location }}{% endif %}</span>
+          </div>
+          <a href="{{ url_for('profile_page') }}" class="avatar-panel-link" data-i18n="nav.edit_profile">Edit profile</a>
+          <button class="avatar-panel-link" id="nav-logout-btn" type="button" data-i18n="nav.logout">Logout</button>
+          <button class="avatar-panel-link danger" id="nav-delete-btn" type="button" data-i18n="nav.delete_account">Delete account permanently</button>
+        </div>
+      </div>
+      {% else %}
+      <a href="{{ url_for('login_page') }}" class="btn btn-primary btn-small" data-i18n="nav.login_register">Login / Register</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<footer>
+  <div class="container">
+    <div>
+      <div class="brand">KrushiMitra AI</div>
+      <div class="disclaimer" data-i18n="footer.disclaimer">An agricultural decision-support tool. Recommendations are
+        informational and should be combined with local agronomic advice, especially for
+        high-value or first-time crops.</div>
+    </div>
+    <div class="disclaimer" data-i18n="footer.data_sources">
+      Data sources: Open-Meteo (weather), browser GPS + reverse geocoding (location), real
+      published agronomy datasets (crop/yield/market models), Google Gemini API (assistant, explanations and photo assessment, if configured).
+    </div>
+  </div>
+</footer>
+
+<script src="{{ asset_url('js/i18n.js') }}"></script>
+<script src="{{ asset_url('js/common.js') }}"></script>
+{% block page_script %}{% endblock %}
+</body>
+</html>

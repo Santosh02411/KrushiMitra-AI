@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+
+<section id="account" class="auth-section">
+  <div class="container form-grid auth-grid">
+    <div class="card auth-card">
+      <div class="logo auth-card-logo"><span class="mark"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14 0 9-4 14-12 14"/><path d="M5 19c3-5 6-8 10-10"/></svg></span> KrushiMitra <span class="logo-ai">AI</span></div>
+
+      <form class="auth-form active" id="login-form">
+        <h1 class="auth-form-title" data-i18n="auth.login_tab">Log in</h1>
+        <div class="field"><label for="login-email" data-i18n="auth.email">Email</label><input type="text" id="login-email" required></div>
+        <div class="field">
+          <label for="login-password" data-i18n="auth.password">Password</label>
+          <div class="password-field">
+            <input type="password" id="login-password" required>
+            <button type="button" class="password-eye" data-target="login-password">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary auth-submit" type="submit" data-i18n="auth.login_tab">Log in</button>
+        <div class="error-note" id="login-error"></div>
+        <div class="auth-or"><span>or</span></div>
+        <div class="demo-box">
+          <p><b>Just looking around?</b> Skip registration — open the full app instantly with a temporary demo account.</p>
+          <a class="btn btn-primary" href="{{ url_for('demo_page') }}" id="demo-btn">▶ Try the demo — no sign-in needed</a>
+        </div>
+        <div class="auth-links">
+          <a href="#" class="auth-link" data-switch="forgot" data-i18n="auth.forgot_link">Forgot your password?</a>
+          <p><span data-i18n="auth.no_account">Don't have an account?</span> <a href="#" class="auth-link" data-switch="register" data-i18n="auth.register_tab">Register</a></p>
+        </div>
+      </form>
+
+      <form class="auth-form" id="register-form">
+        <h1 class="auth-form-title" data-i18n="auth.register_tab">Register</h1>
+        <div class="field-row">
+          <div class="field"><label for="reg-name" data-i18n="auth.name">Name</label><input type="text" id="reg-name" required></div>
+          <div class="field"><label for="reg-email" data-i18n="auth.email">Email</label><input type="text" id="reg-email" required></div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="reg-password" data-i18n="auth.password_min">Password (min. 8 characters)</label>
+            <div class="password-field">
+              <input type="password" id="reg-password" required minlength="8">
+              <button type="button" class="password-eye" data-target="reg-password">👁</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="reg-password-confirm" data-i18n="auth.confirm_password">Confirm password</label>
+            <div class="password-field">
+              <input type="password" id="reg-password-confirm" required minlength="8">
+              <button type="button" class="password-eye" data-target="reg-password-confirm">👁</button>
+            </div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="reg-location" data-i18n="auth.location">Location</label><input type="text" id="reg-location" placeholder="e.g. Nidasoshi, Karnataka"></div>
+          <div class="field"><label for="reg-farm-size" data-i18n="auth.farm_size">Farm size (acres)</label><input type="number" id="reg-farm-size" step="0.1"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="reg-soil-type" data-i18n="auth.soil_type">Soil type</label><select id="reg-soil-type"></select></div>
+          <div class="field"><label for="reg-language" data-i18n="auth.preferred_language">Preferred language</label><select id="reg-language"></select></div>
+        </div>
+        <button class="btn btn-primary auth-submit" type="submit" data-i18n="auth.create_account">Create account</button>
+        <div class="error-note" id="register-error"></div>
+        <div class="auth-links">
+          <p><span data-i18n="auth.have_account">Already have an account?</span> <a href="#" class="auth-link" data-switch="login" data-i18n="auth.login_tab">Log in</a></p>
+        </div>
+      </form>
+
+      <!-- Forgot password: 3 explicit steps — request code, verify code,
+           only then set a new password. The code is emailed for real if
+           SMTP is configured (see .env.example); otherwise it's shown
+           inline, clearly labeled as the dev-only fallback. -->
+      <form class="auth-form" id="forgot-form">
+        <h1 class="auth-form-title" data-i18n="auth.forgot_title">Reset your password</h1>
+        <p class="hint" style="margin-bottom:12px;" data-i18n="auth.forgot_step1">Step 1 of 3 — enter your account email and we'll send a 6-digit code to it.</p>
+        <div class="field"><label for="forgot-email" data-i18n="auth.email">Email</label><input type="text" id="forgot-email" required></div>
+        <button class="btn btn-primary auth-submit" type="submit" data-i18n="auth.send_code">Send code</button>
+        <div class="loading-note show" id="forgot-note" style="display:none;"></div>
+        <div class="auth-links">
+          <a href="#" class="auth-link" data-switch="login" data-i18n="auth.back_to_login">← Back to log in</a>
+        </div>
+      </form>
+
+      <form class="auth-form" id="verify-form">
+        <h1 class="auth-form-title" data-i18n="auth.forgot_title">Reset your password</h1>
+        <p class="hint" style="margin-bottom:12px;" data-i18n="auth.forgot_step2">Step 2 of 3 — enter the 6-digit code sent to your email.</p>
+        <div class="loading-note show" id="verify-note" style="display:none;"></div>
+        <div class="field"><label for="verify-code" data-i18n="auth.code_label">6-digit code</label>
+          <input type="text" id="verify-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" required></div>
+        <button class="btn btn-primary auth-submit" type="submit" data-i18n="auth.verify_code">Verify code</button>
+        <div class="error-note" id="verify-error"></div>
+        <div class="auth-links">
+          <a href="#" class="auth-link" data-switch="login" data-i18n="auth.back_to_login">← Back to log in</a>
+        </div>
+      </form>
+
+      <form class="auth-form" id="reset-form">
+        <h1 class="auth-form-title" data-i18n="auth.forgot_title">Reset your password</h1>
+        <p class="hint" style="margin-bottom:12px;" data-i18n="auth.forgot_step3">Step 3 of 3 — code verified, set your new password.</p>
+        <div class="field">
+          <label for="reset-new-password" data-i18n="auth.new_password">New password</label>
+          <div class="password-field">
+            <input type="password" id="reset-new-password" required minlength="8">
+            <button type="button" class="password-eye" data-target="reset-new-password">👁</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="reset-new-password-confirm" data-i18n="auth.confirm_new_password">Confirm new password</label>
+          <div class="password-field">
+            <input type="password" id="reset-new-password-confirm" required minlength="8">
+            <button type="button" class="password-eye" data-target="reset-new-password-confirm">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary auth-submit" type="submit" data-i18n="auth.reset_password">Reset password</button>
+        <div class="error-note" id="reset-error"></div>
+      </form>
+    </div>
+
+    <div class="card how-card">
+      <h3 style="font-size:1.05rem;" data-i18n="page.login_heading">Sign in to use KrushiMitra AI</h3>
+      <p class="hint" data-i18n="page.login_lead">
+        Every tool here — crop advisor, soil health, market prices, irrigation, and the rest —
+        is tied to your farm profile, so it's behind sign-in. Registering takes a minute and
+        there's no cost.
+      </p>
+      <div class="divider-label" data-i18n="about.whats_real">Built on real data, not guesses</div>
+      <p class="hint" data-i18n="about.login_panel_body">
+        Crop and yield recommendations come from real agricultural datasets and trained models,
+        not scripted responses. Live weather comes from Open-Meteo for your exact location.
+        Market prices are real recorded mandi data. Where something genuinely isn't available yet,
+        KrushiMitra AI says so plainly instead of making up a number.
+      </p>
+      <div class="divider-label" data-i18n="auth.email_setup_summary">Password reset</div>
+      <p class="hint" data-i18n="auth.forgot_help_text">
+        A 6-digit code is emailed to your registered address when you request a password reset.
+        If it doesn't arrive within a minute or two, check your spam folder.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initLoginPage(); });
+</script>
+{% endblock %}

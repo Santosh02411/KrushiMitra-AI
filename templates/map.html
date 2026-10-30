@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Farm map{% endblock %}
+{% block content %}
+<section id="map" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.map_eyebrow">Free, no API key</div>
+      <h2 data-i18n="page.map_heading">Interactive farm map</h2>
+      <p>Uses Leaflet + OpenStreetMap (free, keyless) to show your real GPS location and the real
+        markets near you for a given crop. "Nearby weather stations" isn't shown — Open-Meteo is a
+        model-based forecast service, not a network of physical stations with public locations, so
+        showing fake station markers would be dishonest.</p>
+    </div>
+    <div class="location-row" style="max-width:640px;">
+      <button class="btn btn-ghost btn-small" id="map-detect-btn" type="button">Use my GPS location</button>
+      <input type="text" id="map-crop" placeholder="crop for nearby markets, e.g. wheat" value="wheat">
+      <button class="btn btn-primary btn-small" id="map-refresh-btn" type="button">Show map</button>
+    </div>
+    <div class="location-status" id="map-location-status"></div>
+    <div id="farm-map"></div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initMapPage(); });
+</script>
+{% endblock %}

@@ -1,0 +1,17 @@
+# secrets & local data - never commit / submit these
+.env
+*.db
+*.db.bak
+*.csv.bak
+private_uploads/*
+!private_uploads/.gitkeep
+# python
+venv/
+.venv/
+__pycache__/
+*.pyc
+# editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.log

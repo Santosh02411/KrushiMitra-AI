@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}AI-powered farm decisions{% endblock %}
+{% block content %}
+
+<header class="lp-hero">
+  <div class="container">
+    <div>
+      <div class="eyebrow on-dark">AI Farm Decision Engine</div>
+      <h1>One plan for your farm — from <em>soil to market</em>.</h1>
+      <p class="lead">KrushiMitra AI combines your soil test, live weather, yield models and mandi prices into a
+        personalised farming plan: the best crop, fertilizer, irrigation, a 7-day to-do list and an honest
+        profit estimate — with every number labelled as <b>measured, live, predicted or reference</b>.</p>
+      <div class="lp-cta">
+        <a class="btn btn-demo btn-lg" href="{{ url_for('demo_page') }}">▶ Try the demo — no sign-in</a>
+        {% if session.get('user_id') %}
+        <a class="btn btn-ghost-dark btn-lg" href="{{ url_for('dashboard_page') }}">Open my dashboard</a>
+        {% else %}
+        <a class="btn btn-ghost-dark btn-lg" href="{{ url_for('login_page') }}">Sign in</a>
+        <a class="btn btn-ghost-dark btn-lg" href="{{ url_for('login_page') }}#register">Create free account</a>
+        {% endif %}
+      </div>
+      <p class="lp-note">The demo opens instantly with a temporary guest account — nothing to fill in.</p>
+      <div class="lp-trust">
+        <div><b>{{ stats.crops or 22 }}</b>crops in the soil model</div>
+        <div><b>{{ '{:,}'.format(stats.samples) if stats.samples else '2,200' }}</b>real field samples</div>
+        <div><b>{{ stats.yield_crops or 46 }}</b>crops with yield models</div>
+        <div><b>6</b>languages</div>
+      </div>
+    </div>
+
+    <div class="lp-mock" aria-label="Illustration of a farm plan">
+      <div class="lp-mock-head"><span>Illustration — your plan uses your own data</span><span>● live</span></div>
+      <div class="pick">
+        <small>Best soil-and-climate match</small>
+        <h3>🌾 Your recommended crop</h3>
+        <div class="row"><span>Soil suitability</span><span>checked against 7 parameters</span></div>
+        <div class="row"><span>Irrigation</span><span>from the live 7-day forecast</span></div>
+        <div class="row"><span>Expected yield</span><span>model estimate + error range</span></div>
+        <div class="row"><span>Revenue &amp; profit</span><span>a range, never a promise</span></div>
+        <div class="lp-chips">
+          <span class="prov prov-measured">measured</span><span class="prov prov-live">live</span>
+          <span class="prov prov-model">model</span><span class="prov prov-reference">reference</span>
+          <span class="prov prov-observed">observed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="lp-section">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light">What you get</div>
+      <h2>A complete farm command center</h2>
+      <p>Everything a farmer decides in a season, in one place — built on trained models and real datasets.</p>
+    </div>
+    <div class="lp-grid">
+      <div class="lp-feature"><div class="ic">✨</div><h3>AI Farm Decision Engine</h3><p>Best crop + alternatives, soil fit, nutrient gaps, fertilizer, irrigation, weather precautions, yield, price, costs, profit range and a 7-day action plan.</p></div>
+      <div class="lp-feature"><div class="ic">🧠</div><h3>RAG Agricultural Assistant</h3><p>Ask about crops, soil, pests or schemes. Answers are retrieved from a knowledge base (upload your own PDFs) and cite their sources.</p></div>
+      <div class="lp-feature"><div class="ic">📈</div><h3>Farmer Dashboard</h3><p>Current crops, soil health, live weather and alerts, upcoming activities, irrigation reminders, prices, yield and income vs. expenses.</p></div>
+      <div class="lp-feature"><div class="ic">🐛</div><h3>Disease check + photo AI</h3><p>Match symptoms to a reference of 35 crops, or upload a leaf photo for an AI visual assessment (clearly labelled, never a lab diagnosis).</p></div>
+      <div class="lp-feature"><div class="ic">💧</div><h3>Irrigation &amp; calendar</h3><p>A water-balance irrigation schedule from the live forecast and a sowing-to-harvest calendar with fertilizer dates.</p></div>
+      <div class="lp-feature"><div class="ic">🌐</div><h3>Six languages</h3><p>English, हिन्दी, ಕನ್ನಡ, मराठी, தமிழ், తెలుగు — including AI explanations in your language.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="lp-section alt">
+  <div class="container">
+    <div class="section-head"><div class="eyebrow on-light">How it works</div><h2>From soil report to action list in a minute</h2></div>
+    <div class="lp-steps">
+      <div class="lp-step"><h4>Enter what you know</h4><p>Location, area and soil test values (N, P, K, pH). Anything you skip is handled gracefully.</p></div>
+      <div class="lp-step"><h4>The engine combines models</h4><p>Crop model, yield model, mandi price data, fertilizer and irrigation rules, live weather.</p></div>
+      <div class="lp-step"><h4>Get a labelled plan</h4><p>Every number is tagged: measured, live, model, reference or observed history.</p></div>
+      <div class="lp-step"><h4>Save it to your farm</h4><p>One click adds the crop calendar, reminders and records to your dashboard.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="lp-section">
+  <div class="container lp-honest">
+    <div>
+      <div class="eyebrow on-light">Honest by design</div>
+      <h2>Predictions are not promises</h2>
+      <p style="color:var(--ink-soft)">Farming advice that hides its uncertainty is dangerous. KrushiMitra AI shows model error margins, says when data is missing, never invents a price or a cost, and never guarantees profit. Costs it can't know — seeds, labour, pesticides — only count when you enter them.</p>
+    </div>
+    <div class="card">
+      <div class="prov-legend" style="flex-direction:column;align-items:flex-start;gap:10px">
+        <span><span class="prov prov-measured">measured</span> a value you entered</span>
+        <span><span class="prov prov-live">live</span> fetched right now (weather)</span>
+        <span><span class="prov prov-model">model</span> a trained-model estimate, with error range</span>
+        <span><span class="prov prov-reference">reference</span> published tables and transparent rules</span>
+        <span><span class="prov prov-observed">observed</span> real historical records</span>
+        <span><span class="prov prov-unavailable">unavailable</span> no data — and it tells you why</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lp-final">
+  <div class="container">
+    <h2>See it with your own eyes</h2>
+    <p>No registration needed to explore. Judges and first-time visitors: the demo button is the fastest way in.</p>
+    <div class="lp-cta" style="justify-content:center">
+      <a class="btn btn-demo btn-lg" href="{{ url_for('demo_page') }}">▶ Try the demo</a>
+      {% if not session.get('user_id') %}<a class="btn btn-ghost-dark btn-lg" href="{{ url_for('login_page') }}">Sign in / Register</a>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script>document.addEventListener('DOMContentLoaded', () => { initCommon(); });</script>
+{% endblock %}

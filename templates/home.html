@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<header class="hero">
+  <div class="container">
+    <div>
+      <div class="eyebrow on-dark" data-i18n="home.eyebrow">Live field reading</div>
+      <h1><span data-i18n="home.welcome">Welcome back</span>{% if user %}, {{ user.name }}{% endif %}.</h1>
+      <p class="lead" data-i18n="home.lead">
+        KrushiMitra AI reads your soil test values against live weather for your exact GPS location and a
+        model trained on 2,200 real field samples across 22 crops — the panel on the right is
+        pulling its numbers from that model right now, not from a script.
+      </p>
+      <div class="hero-ctas">
+        <a href="{{ url_for('recommend_page') }}" class="btn btn-primary" data-i18n="home.cta_reading">Take a reading</a>
+        <a href="{{ url_for('about_page') }}" class="btn btn-ghost-dark" data-i18n="home.cta_sources">See the data sources</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span data-i18n="home.model_readout">Model readout</span><span class="dot"></span></div>
+      <div class="gauge-wrap">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="10"/>
+          <circle id="accuracy-arc" cx="60" cy="60" r="52" fill="none" stroke="url(#gaugeGrad)"
+                  stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"
+                  transform="rotate(-90 60 60)"/>
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#6FA96B"/>
+              <stop offset="100%" stop-color="#E2892C"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="gauge-figure">
+          <span class="n" id="stat-accuracy">—</span>
+          <span class="label" data-i18n="home.accuracy_label">crop model test accuracy</span>
+        </div>
+      </div>
+      <div class="readout-row"><span class="k" data-i18n="home.training_samples">Training samples</span><span class="v" id="stat-samples">—</span></div>
+      <div class="readout-row"><span class="k" data-i18n="home.crops_modeled">Crops modeled</span><span class="v" id="stat-crops">—</span></div>
+      <div class="readout-row"><span class="k" data-i18n="home.market_r2">Market model R²</span><span class="v" id="stat-market-r2">—</span></div>
+      <div class="readout-row"><span class="k" data-i18n="home.weather_source">Weather source</span><span class="v">Open-Meteo, live</span></div>
+    </div>
+  </div>
+  <div class="tear"></div>
+</header>
+
+<section style="padding:26px 0 0">
+  <div class="container">
+    <a href="{{ url_for('decision_page') }}" class="card promo">
+      <span style="font-size:2.4rem">✨</span>
+      <span><b>AI Farm Decision Engine</b><br><span class="d">Soil + weather + yield + market + costs → one personalised farming plan with a 7-day action list.</span></span>
+      <span class="btn btn-primary" style="margin-left:auto">Build my plan →</span>
+    </a>
+  </div>
+</section>
+
+<section id="notifications">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="home.notif_eyebrow">Smart notifications</div>
+      <h2 data-i18n="home.notif_heading">What needs your attention</h2>
+      <p data-i18n="home.notif_body">Derived from your saved crop calendars and live weather — rain tomorrow, fertilizer due
+        today, harvest approaching, and general disease-risk weather flags.</p>
+    </div>
+    <div class="notif-list" id="home-notif-list"><p class="notif-empty" data-i18n="common.loading">Loading…</p></div>
+  </div>
+</section>
+
+<section class="alt" id="home-news">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="home.announcements_eyebrow">Announcements</div>
+      <h2 data-i18n="home.news_heading">News</h2>
+    </div>
+    <div id="home-news-list"><p class="notif-empty" data-i18n="common.loading">Loading…</p></div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="home.all_tools_eyebrow">All tools</div>
+      <h2 data-i18n="home.jump_heading">Jump to a tool</h2>
+    </div>
+    <div class="feature-grid">
+      <a class="feature-card" href="{{ url_for('recommend_page') }}"><span class="emoji">🌱</span><h4 data-i18n="nav.recommend">Crop advisor</h4><p data-i18n="home.f_recommend">Recommendation + yield + profitability</p></a>
+      <a class="feature-card" href="{{ url_for('soil_page') }}"><span class="emoji">🌾</span><h4 data-i18n="home.f_soil_title">Soil health</h4><p data-i18n="home.f_soil">Score, deficiencies, fertilizer</p></a>
+      <a class="feature-card" href="{{ url_for('yield_page') }}"><span class="emoji">📊</span><h4 data-i18n="home.f_yield_title">Yield prediction</h4><p data-i18n="home.f_yield">Expected tonnes for your area</p></a>
+      <a class="feature-card" href="{{ url_for('market_page') }}"><span class="emoji">💰</span><h4 data-i18n="home.f_market_title">Market price</h4><p data-i18n="home.f_market">Real mandi prices + prediction</p></a>
+      <a class="feature-card" href="{{ url_for('fertilizer_page') }}"><span class="emoji">🚜</span><h4 data-i18n="nav.fertilizer">Fertilizer plan</h4><p data-i18n="home.f_fertilizer">Quantity, cost, schedule</p></a>
+      <a class="feature-card" href="{{ url_for('profit_page') }}"><span class="emoji">💵</span><h4 data-i18n="nav.profit">Profit estimation</h4><p data-i18n="home.f_profit">Income − expenses</p></a>
+      <a class="feature-card" href="{{ url_for('disease_page') }}"><span class="emoji">🐛</span><h4 data-i18n="home.f_disease_title">Disease check</h4><p data-i18n="home.f_disease">Symptom-based reference</p></a>
+      <a class="feature-card" href="{{ url_for('water_page') }}"><span class="emoji">💧</span><h4 data-i18n="nav.water">Irrigation</h4><p data-i18n="home.f_water">7-day schedule</p></a>
+      <a class="feature-card" href="{{ url_for('calendar_page') }}"><span class="emoji">📅</span><h4 data-i18n="home.f_calendar_title">Crop calendar</h4><p data-i18n="home.f_calendar">Sowing to harvest dates</p></a>
+      <a class="feature-card" href="{{ url_for('dashboard_page') }}"><span class="emoji">📈</span><h4 data-i18n="home.f_dashboard_title">Farm dashboard</h4><p data-i18n="home.f_dashboard">Your real charts</p></a>
+      <a class="feature-card" href="{{ url_for('map_page') }}"><span class="emoji">🗺️</span><h4 data-i18n="home.f_map_title">Farm map</h4><p data-i18n="home.f_map">Location + nearby markets</p></a>
+      <a class="feature-card" href="{{ url_for('knowledge_page') }}"><span class="emoji">📚</span><h4 data-i18n="home.f_knowledge_title">Knowledge base</h4><p data-i18n="home.f_knowledge">Articles, schemes, practices</p></a>
+      <a class="feature-card" href="{{ url_for('assistant_page') }}"><span class="emoji">🧠</span><h4 data-i18n="nav.assistant">AI Assistant</h4><p data-i18n="home.f_chat">Ask questions, answered from the knowledge base</p></a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initHomePage(); });
+</script>
+{% endblock %}

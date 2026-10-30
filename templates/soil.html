@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Soil health{% endblock %}
+{% block content %}
+<section id="soil">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.soil_eyebrow">Step 2</div>
+      <h2 data-i18n="page.soil_heading">Soil health analysis</h2>
+      <p>Enter your soil test values to get a health score, nutrient status, and fertilizer
+        guidance. This uses the classification bands from India's Soil Health Card scheme — a
+        transparent rule engine, not a black box.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="card">
+        <div class="field-row">
+          <div class="field"><label for="sh-n">Nitrogen (kg/ha)</label><input type="number" id="sh-n" value="120"></div>
+          <div class="field"><label for="sh-p">Phosphorus (kg/ha)</label><input type="number" id="sh-p" value="18"></div>
+          <div class="field"><label for="sh-k">Potassium (kg/ha)</label><input type="number" id="sh-k" value="150"></div>
+          <div class="field"><label for="sh-ph">Soil pH</label><input type="number" id="sh-ph" value="6.5" step="0.1"></div>
+        </div>
+        <div class="field">
+          <label for="sh-oc">Organic Carbon (%) — optional</label>
+          <input type="number" id="sh-oc" step="0.01" placeholder="e.g. 0.6">
+        </div>
+        <button class="btn btn-primary" id="soil-health-btn" type="button">Analyze soil</button>
+        <div class="loading-note" id="soil-health-loading">Scoring…</div>
+        <div class="error-note" id="soil-health-error"></div>
+      </div>
+
+      <div class="card how-card">
+        <h3 style="font-size:1.05rem;">How this is scored</h3>
+        <p class="hint">Nitrogen, Phosphorus, Potassium and Organic Carbon are each classified
+          Low / Medium / High against published Soil Health Card bands. pH is checked against the
+          6.0-7.5 optimal range. These combine into a 0-100 score. Fertilizer amounts shown are
+          general guidance — confirm exact dosage with a local soil-testing lab.</p>
+      </div>
+    </div>
+
+    <div id="soil-health-results" style="display:none; margin-top:32px;">
+      <div class="score-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="9"/>
+          <circle id="soil-score-arc" cx="50" cy="50" r="42" fill="none" stroke="url(#gaugeGrad)"
+                  stroke-width="9" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"
+                  transform="rotate(-90 50 50)"/>
+        </svg>
+        <div class="score-figure"><span class="n" id="soil-score-n">—</span><span class="label">soil health score</span></div>
+      </div>
+      <div class="nutrient-grid" id="nutrient-grid"></div>
+      <h4 style="font-size:1rem;">Fertilizer recommendation</h4>
+      <div id="fert-list"></div>
+      <h4 style="font-size:1rem;">Improvement suggestions</h4>
+      <ul class="tips-list" id="soil-suggestions"></ul>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initSoilPage(); });
+</script>
+{% endblock %}

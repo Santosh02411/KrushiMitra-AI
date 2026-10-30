@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+
+<section id="analytics">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.analytics_eyebrow">Your data, aggregated</div>
+      <h2 data-i18n="page.analytics_heading">Analytics</h2>
+      <p>Monthly or yearly totals from your own logged records — yield, profit, crop comparison,
+        and water usage. Nothing here is forecast; it's a sum of what's actually been recorded.</p>
+    </div>
+
+    <div class="kb-tabs">
+      <button class="kb-tab active" data-period="monthly" type="button">Monthly</button>
+      <button class="kb-tab" data-period="yearly" type="button">Yearly</button>
+    </div>
+
+    <div id="analytics-empty" class="empty-dash" style="display:none;">No records yet — use the Yield
+      Prediction, Profit Estimation, or Irrigation tools (while signed in) to start building analytics.</div>
+
+    <div id="analytics-charts" class="dash-charts">
+      <div class="chart-card"><h4>Yield over time (tonnes)</h4><canvas id="chart-analytics-yield"></canvas></div>
+      <div class="chart-card"><h4>Profit over time (₹)</h4><canvas id="chart-analytics-profit"></canvas></div>
+      <div class="chart-card"><h4>Water usage over time (mm)</h4><canvas id="chart-analytics-water"></canvas></div>
+      <div class="chart-card"><h4>Crop comparison (total yield, tonnes)</h4><canvas id="chart-analytics-crops"></canvas></div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initAnalyticsPage(); });
+</script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Your profile{% endblock %}
+{% block content %}
+
+<section id="account">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.profile_eyebrow">Account settings</div>
+      <h2 data-i18n="page.profile_heading">Profile</h2>
+      <p>These defaults pre-fill your location and soil type across the app. Logout and account
+        deletion live in the profile menu at the top right.</p>
+    </div>
+
+    <div class="card" id="account-panel" style="max-width:640px;">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profile-avatar-big"></div>
+        <div>
+          <h3 id="profile-name" style="margin-bottom:2px;"></h3>
+          <span class="role-badge" id="profile-role"></span>
+        </div>
+      </div>
+
+      <div class="divider-label">Farm details</div>
+      <div class="profile-grid">
+        <div class="field"><label>Location</label><input type="text" id="profile-location"></div>
+        <div class="field"><label>Farm size (acres)</label><input type="number" id="profile-farm-size" step="0.1"></div>
+        <div class="field"><label>Soil type</label><select id="profile-soil-type"></select></div>
+        <div class="field"><label>Preferred language</label><select id="profile-language"></select></div>
+      </div>
+      <button class="btn btn-primary" id="save-profile-btn" type="button">Save changes</button>
+      <span id="profile-save-status" class="location-status" style="margin-left:12px; display:inline-block;"></span>
+    </div>
+
+    {% if user and user.role == 'admin' %}
+    <div class="card" id="admin-panel" style="max-width:640px; margin-top:24px;">
+      <h4 style="font-family:var(--mono); font-size:.8rem; text-transform:uppercase; color:var(--accent);">Admin: registered farmers</h4>
+      <div id="admin-users"></div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initProfilePage(); });
+</script>
+{% endblock %}

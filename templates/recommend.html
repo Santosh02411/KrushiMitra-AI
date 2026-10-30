@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Crop advisor{% endblock %}
+{% block content %}
+<section id="recommend">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.recommend_eyebrow">Step 1</div>
+      <h2 data-i18n="page.recommend_heading">Crop recommendation</h2>
+      <p>Enter your soil test values (N, P, K, pH). Climate values auto-fill from live weather for
+        your exact GPS location — allow location access for the most accurate reading, or type a
+        location and override manually.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="card">
+        <div class="field">
+          <label for="location">Location</label>
+          <div class="location-row">
+            <input type="text" id="location" placeholder="e.g. Nidasoshi, Karnataka" value="">
+            <button class="btn btn-ghost btn-small" id="detect-btn" type="button">Use my GPS location</button>
+          </div>
+          <div class="location-status" id="location-status"></div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="state">State</label>
+            <select id="state"><option value="">Select state</option></select>
+          </div>
+          <div class="field">
+            <label for="district">District</label>
+            <select id="district"><option value="">Select district</option></select>
+          </div>
+          <div class="field">
+            <label for="soil-type">Soil type</label>
+            <select id="soil-type"><option value="">Select soil type</option></select>
+          </div>
+          <div class="field">
+            <label for="season">Season</label>
+            <select id="season"><option value="">Select season</option></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="n">Nitrogen — N (kg/ha)</label>
+            <input type="number" id="n" value="50" min="0" max="150">
+          </div>
+          <div class="field">
+            <label for="p">Phosphorus — P (kg/ha)</label>
+            <input type="number" id="p" value="50" min="0" max="150">
+          </div>
+          <div class="field">
+            <label for="k">Potassium — K (kg/ha)</label>
+            <input type="number" id="k" value="50" min="0" max="210">
+          </div>
+          <div class="field">
+            <label for="ph">Soil pH</label>
+            <input type="number" id="ph" value="6.5" min="3" max="10" step="0.1">
+          </div>
+        </div>
+
+        <div class="divider-label">Climate (auto-filled from live weather)</div>
+        <div class="field-row">
+          <div class="field">
+            <label for="temperature">Temperature (°C)</label>
+            <input type="number" id="temperature" placeholder="auto" step="0.1">
+          </div>
+          <div class="field">
+            <label for="humidity">Humidity (%)</label>
+            <input type="number" id="humidity" placeholder="auto" step="0.1">
+          </div>
+          <div class="field">
+            <label for="rainfall">Rainfall (mm)</label>
+            <input type="number" id="rainfall" placeholder="auto" step="0.1">
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-small" id="fetch-weather-btn" type="button">Fetch live weather for this location</button>
+        <div class="weather-preview" id="weather-preview"></div>
+
+        <div style="margin-top:22px;">
+          <button class="btn btn-primary" id="recommend-btn" type="button">Get crop recommendations</button>
+        </div>
+        <div class="loading-note" id="recommend-loading">Running the model…</div>
+        <div class="error-note" id="recommend-error"></div>
+      </div>
+
+      <div class="card how-card">
+        <h3 style="font-size:1.05rem;">Where the numbers come from</h3>
+        <ol>
+          <li><b>Soil values (N/P/K/pH)</b> — you enter these from a soil test; no API can guess
+            what is in your specific field.</li>
+          <li><b>Location</b> — read from your device's actual GPS via the browser, then reverse
+            geocoded to a place name. Far more accurate than IP-based location, which in India can
+            be off by hundreds of km.</li>
+          <li><b>Climate values</b> — fetched live from Open-Meteo for your coordinates.</li>
+          <li><b>Crop model</b> — a RandomForest classifier trained on a published 2,200-row
+            dataset, evaluated on a held-out 20% test split.</li>
+        </ol>
+        <div class="source-tags">
+          <span class="source-tag">Browser GPS</span>
+          <span class="source-tag">open-meteo.com</span>
+          <span class="source-tag">scikit-learn RandomForest</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="results">
+      <div id="weather-alerts"></div>
+      <div class="weather-summary" id="weather-summary"></div>
+      <div class="forecast-strip" id="forecast-strip"></div>
+      <div class="section-head" style="margin-top:30px;">
+        <h3 style="font-size:1.2rem;">Recommended crop</h3>
+      </div>
+      <div id="hero-crop"></div>
+      <div class="section-head" style="margin-top:26px;">
+        <h3 style="font-size:1.1rem;">Other suggestions</h3>
+      </div>
+      <div class="crop-grid" id="crop-grid"></div>
+    </div>
+
+    <div class="section-head" style="margin-top:50px;">
+      <div class="eyebrow on-light">Real, state-grounded — 49 crops</div>
+      <h3 style="font-size:1.2rem;">Commonly grown in your state</h3>
+      <p>Real government production records, ranked by how consistently each crop is actually grown
+        there — covering field crops the soil-based model above doesn't know at all (sugarcane,
+        tobacco, jowar, bajra, ragi, wheat, onion, and more). This is a real ranked list of what's
+        actually grown there, not a trained prediction — climate/season alone can't reliably tell
+        which single crop to recommend, so this shows real records instead of a guessed score.</p>
+    </div>
+    <div id="regional-crops-empty" class="empty-dash" style="display:none;">Select a state above and click "Get crop recommendations" to see real crops grown there.</div>
+    <div class="crop-grid" id="regional-crop-grid"></div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initRecommendPage(); });
+</script>
+{% endblock %}

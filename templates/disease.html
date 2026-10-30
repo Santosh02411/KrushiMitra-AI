@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Disease check{% endblock %}
+{% block content %}
+<section id="disease" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.disease_eyebrow">Step 5</div>
+      <h2 data-i18n="page.disease_heading">Disease check</h2>
+      <p>Two ways to check: <b>(1) match the symptoms you see</b> against a reference of common diseases, or
+        <b>(2) upload a leaf photo</b> for an AI visual assessment. The photo assessment uses Google Gemini's
+        vision model — it gives <i>possibilities with uncertainty, not a diagnosis</i> — and only runs when a
+        Gemini API key is configured; otherwise the photo is just saved and the page says it was not analysed.</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="card">
+        <div class="field"><label for="disease-crop">Crop</label>
+          <select id="disease-crop">
+            <option value="rice">Rice</option><option value="wheat">Wheat</option>
+            <option value="cotton">Cotton</option><option value="potato">Potato</option>
+            <option value="maize">Maize</option><option value="chickpea">Chickpea</option>
+            <option value="lentil">Lentil</option><option value="pigeonpeas">Pigeon peas</option>
+            <option value="mungbean">Mung bean</option><option value="blackgram">Black gram</option>
+            <option value="banana">Banana</option><option value="mango">Mango</option>
+            <option value="grapes">Grapes</option><option value="watermelon">Watermelon</option>
+            <option value="muskmelon">Muskmelon</option><option value="coconut">Coconut</option>
+            <option value="jute">Jute</option><option value="coffee">Coffee</option>
+            <option value="pomegranate">Pomegranate</option><option value="orange">Orange</option>
+            <option value="papaya">Papaya</option><option value="sugarcane">Sugarcane</option>
+            <option value="tobacco">Tobacco</option><option value="jowar">Jowar</option>
+            <option value="onion">Onion</option><option value="groundnut">Groundnut</option>
+            <option value="soybean">Soybean</option><option value="sunflower">Sunflower</option>
+            <option value="mustard">Mustard</option><option value="chilli">Chilli</option>
+            <option value="turmeric">Turmeric</option><option value="ginger">Ginger</option>
+            <option value="garlic">Garlic</option><option value="apple">Apple</option>
+            <option value="barley">Barley</option>
+          </select>
+        </div>
+        <button class="btn btn-ghost btn-small" id="load-symptoms-btn" type="button">Load symptoms for this crop</button>
+        <div class="symptom-list" id="symptom-list"></div>
+        <button class="btn btn-primary" id="disease-check-btn" type="button" style="margin-top:10px;">Check</button>
+        <div class="loading-note" id="disease-loading">Matching…</div>
+        <div class="error-note" id="disease-error"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1rem;">📷 Leaf photo (AI visual assessment)</h3>
+        <div class="photo-upload-area">
+          <input type="file" id="disease-photo-input" accept="image/jpeg,image/png,image/webp" capture="environment">
+          <p class="hint" style="margin-top:8px;">JPEG, PNG or WEBP up to 6 MB. Pick the crop on the left first. Photos are stored privately for your account only.</p>
+          <img id="photo-preview" class="photo-preview" style="display:none;" alt="Your uploaded leaf photo">
+        </div>
+        <div class="loading-note" id="photo-loading">Analysing photo…</div>
+        <div id="photo-analysis"></div>
+      </div>
+      </div>
+    </div>
+
+    <div id="disease-results" style="display:none; margin-top:26px;"></div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initDiseasePage(); });
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Yield prediction{% endblock %}
+{% block content %}
+<section id="yield">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow on-light" data-i18n="page.yield_eyebrow">Standalone tool</div>
+      <h2 data-i18n="page.yield_heading">Yield prediction</h2>
+      <p>Enter your area, crop, and location/season — get an expected total yield and the model's
+        real held-out fit, from the same yield model used in the crop advisor above.</p>
+    </div>
+
+    <div class="card" style="max-width:560px;">
+      <div class="field-row">
+        <div class="field"><label for="yp-crop">Crop</label>
+          <select id="yp-crop">
+            <option value="rice">Rice</option><option value="maize">Maize</option>
+            <option value="chickpea">Chickpea (Gram)</option><option value="pigeonpeas">Pigeon peas (Arhar/Tur)</option>
+            <option value="mothbeans">Moth beans</option><option value="mungbean">Mung bean (Moong)</option>
+            <option value="blackgram">Black gram (Urad)</option><option value="lentil">Lentil (Masoor)</option>
+            <option value="banana">Banana</option><option value="cotton">Cotton</option>
+            <option value="jute">Jute</option><option value="arecanut">Arecanut</option>
+            <option value="bajra">Bajra (Pearl millet)</option><option value="barley">Barley</option>
+            <option value="black pepper">Black pepper</option><option value="cardamom">Cardamom</option>
+            <option value="cashewnut">Cashewnut</option><option value="castor">Castor seed</option>
+            <option value="coriander">Coriander</option><option value="cowpea">Cowpea (Lobia)</option>
+            <option value="chilli">Chilli (dry)</option><option value="garlic">Garlic</option>
+            <option value="ginger">Ginger</option><option value="groundnut">Groundnut</option>
+            <option value="guar">Guar seed</option><option value="horsegram">Horse gram</option>
+            <option value="jowar">Jowar (Sorghum)</option><option value="khesari">Khesari</option>
+            <option value="linseed">Linseed</option><option value="mesta">Mesta</option>
+            <option value="niger">Niger seed</option><option value="onion">Onion</option>
+            <option value="potato">Potato</option><option value="ragi">Ragi (Finger millet)</option>
+            <option value="mustard">Mustard (Rapeseed)</option><option value="safflower">Safflower</option>
+            <option value="sunnhemp">Sunn hemp</option><option value="sesame">Sesame</option>
+            <option value="small millets">Small millets</option><option value="soybean">Soybean</option>
+            <option value="sugarcane">Sugarcane</option><option value="sunflower">Sunflower</option>
+            <option value="sweet potato">Sweet potato</option><option value="tapioca">Tapioca</option>
+            <option value="tobacco">Tobacco</option><option value="turmeric">Turmeric</option>
+          </select>
+        </div>
+        <div class="field"><label for="yp-area">Area (acres)</label><input type="number" id="yp-area" value="2" step="0.1"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="yp-state">State</label><select id="yp-state"></select></div>
+        <div class="field"><label for="yp-season">Season</label><select id="yp-season"></select></div>
+      </div>
+      <button class="btn btn-primary" id="yield-predict-btn" type="button">Predict yield</button>
+      <div class="loading-note" id="yield-loading">Running the model…</div>
+      <div class="error-note" id="yield-error"></div>
+    </div>
+
+    <div id="yield-results" style="display:none; max-width:560px;"></div>
+  </div>
+</section>
+{% endblock %}
+{% block page_script %}
+<script src="{{ asset_url('js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => { initCommon(); initYieldPage(); });
+</script>
+{% endblock %}
